@@ -1,0 +1,842 @@
+
+<!DOCTYPE html>
+<html lang='es'>
+<head>
+<meta charset='UTF-8'>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎓 SiCIE MVG+ - Consulta Estudiantil</title>
+<!-- Incluir jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<style>
+:root {
+    --primary: #003366;
+    --secondary: #FF6600;
+    --accent: #4CAF50;
+    --light-bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text-dark: #2d3748;
+    --text-light: #718096;
+    --border: #e2e8f0;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: var(--text-dark);
+}
+
+/* Header Institucional Mejorado */
+.header-institucional {
+    background: linear-gradient(135deg, var(--primary) 0%, #002244 100%);
+    color: white;
+    padding: 0;
+    box-shadow: var(--shadow);
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Logo Escuela */
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.logo-escuela {
+    height: 90px;
+    width: auto;
+    object-fit: contain;
+}
+
+.institucion-info h1 {
+    font-size: 22px;
+    margin: 0;
+    font-weight: 600;
+}
+
+.institucion-info h2 {
+    font-size: 16px;
+    margin: 5px 0 0 0;
+    font-weight: 400;
+    opacity: 0.9;
+}
+
+/* Sistema Info */
+.sistema-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.sistema-text {
+    text-align: right;
+}
+
+.sistema-titulo {
+    font-size: 14px;
+    margin: 0;
+    opacity: 0.9;
+}
+
+.sistema-version {
+    font-size: 18px;
+    margin: 5px 0 0 0;
+    font-weight: 600;
+    color: var(--secondary);
+}
+
+.logo-sistema {
+    height: 80px;
+    width: auto;
+    object-fit: contain;
+}
+
+/* Contenedor Principal */
+.container {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+/* Login */
+.login {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: var(--shadow-hover);
+    text-align: center;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.login h2 {
+    color: var(--primary);
+    margin-bottom: 10px;
+    font-size: 24px;
+}
+
+.login p {
+    color: var(--text-light);
+    margin-bottom: 25px;
+}
+
+/* Inputs y Botones Mejorados */
+.input-group {
+    margin-bottom: 25px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: var(--light-bg);
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+}
+
+.btn {
+    background: linear-gradient(135deg, var(--primary) 0%, #004488 100%);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, var(--secondary) 0%, #ff8533 100%);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #38a169 0%, #48bb78 100%);
+}
+
+/* Cards Mejoradas */
+.card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 25px;
+    margin-top: 25px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+.card h3 {
+    color: var(--primary);
+    margin-bottom: 15px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Header de sección con botones */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.section-title {
+    color: var(--primary);
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+}
+
+/* Botones de Materia */
+.btn-materia {
+    background: linear-gradient(135deg, var(--primary) 0%, #004488 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    margin: 8px 8px 0 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.btn-materia:hover {
+    background: linear-gradient(135deg, var(--secondary) 0%, #ff8533 100%);
+    transform: translateY(-1px);
+}
+
+/* Sugerencias Mejoradas */
+.sugerencia {
+    background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+    border: 2px solid #e1f5fe;
+    border-radius: 12px;
+    padding: 15px;
+    margin: 10px 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.sugerencia:hover {
+    transform: translateX(5px);
+    border-color: var(--primary);
+    background: linear-gradient(135deg, #e1f5fe 0%, #fce4ec 100%);
+}
+
+.sugerencia .codigo {
+    color: var(--primary);
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+/* Tablas Responsive */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th, td {
+    padding: 12px 15px;
+    border: 1px solid var(--border);
+    text-align: left;
+}
+
+th {
+    background: linear-gradient(135deg, var(--primary) 0%, #004488 100%);
+    color: white;
+    font-weight: 600;
+}
+
+tr:nth-child(even) {
+    background-color: var(--light-bg);
+}
+
+/* Badges y Estados */
+.badge {
+    background: var(--accent);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+    
+    .logo-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .sistema-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .sistema-text {
+        text-align: center;
+    }
+    
+    .container {
+        padding: 0 15px;
+    }
+    
+    .login {
+        padding: 25px;
+        margin: 20px 10px;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .logo-escuela {
+        height: 70px;
+    }
+    
+    .logo-sistema {
+        height: 60px;
+    }
+    
+    .input-field, .btn {
+        width: 100%;
+        margin: 5px 0;
+    }
+    
+    /* Tablas en móvil */
+    .table-container {
+        overflow-x: visible;
+    }
+    
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+    
+    thead {
+        display: none;
+    }
+    
+    tr {
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        margin-bottom: 15px;
+        overflow: hidden;
+        background: var(--card-bg);
+        box-shadow: var(--shadow);
+    }
+    
+    td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 15px;
+        border: none;
+        border-bottom: 1px solid var(--border);
+        font-size: 14px;
+    }
+    
+    td:last-child {
+        border-bottom: none;
+    }
+    
+    td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--primary);
+        margin-right: 12px;
+        text-align: left;
+        flex: 0 0 45%;
+        max-width: 45%;
+        word-break: break-word;
+    }
+    
+    td span.value {
+        flex: 1;
+        text-align: right;
+        word-break: break-word;
+        color: var(--text-dark);
+    }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Mensajes de Estado */
+.mensaje {
+    padding: 15px;
+    border-radius: 10px;
+    margin: 10px 0;
+    text-align: center;
+    font-weight: 500;
+}
+
+.mensaje.error {
+    background: #fee;
+    color: #c53030;
+    border: 1px solid #feb2b2;
+}
+
+.mensaje.success {
+    background: #f0fff4;
+    color: #2d7d32;
+    border: 1px solid #9ae6b4;
+}
+
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+</head>
+<body>
+
+<div class="header-institucional">
+    <div class="header-content">
+        <div class="logo-section">
+            <div class="logo-container">
+                <img src="https://static.wixstatic.com/media/79b9a2_cc0628f635a246d98fa4f1ad54176709~mv2.png" 
+                     alt="Logo Escuela" class="logo-escuela">
+                <div class="institucion-info">
+                    <h1>Escuela Preparatoria Regional de Colotlán</h1>
+                    <h2>Módulo Villa Guerrero</h2>
+                </div>
+            </div>
+        </div>
+        <div class="sistema-info">
+            <div class="sistema-container">
+                <div class="sistema-text">
+                    <p class="sistema-titulo">Sistema de Consulta de Información Estudiantil</p>
+                    <p class="sistema-version">SiCIE MVG+ v.4.8.1</p>
+                </div>
+                <img src="https://static.wixstatic.com/media/79b9a2_4464d9acd87f43ee85bdfea576ae9b1c~mv2.png" 
+                     alt="Logo Sistema" class="logo-sistema">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id='login' class='login fade-in'>
+    <h2>🔐 Acceso Seguro</h2>
+    <p>Introduce la contraseña para acceder al sistema de consulta</p>
+    <div class="input-group">
+        <input type='password' id='clave' class='input-field' placeholder='Ingresa la contraseña' onkeydown="if(event.key==='Enter') verificar()">
+    </div>
+    <button onclick='verificar()' class='btn'>Acceder al Sistema</button>
+    <p id='intentos' style="margin-top: 15px; color: #e53e3e; font-weight: 500;"></p>
+</div>
+
+<div id='contenido' style='display:none'>
+    <div class="container">
+        <div class="card fade-in">
+            <h2>🎓 Sistema de Consulta Estudiantil</h2>
+            <p style="color: var(--text-light); font-size: 16px; margin-bottom: 20px;">
+                Busca la información del estudiante por código o nombre completo
+            </p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <div>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--primary);">🔎 Búsqueda por Código</label>
+                    <input type="text" id="codigo" class="input-field" placeholder="Ejemplo: 304863039" onkeydown="if(event.key==='Enter') buscarPorCodigo()">
+                    <button onclick="buscarPorCodigo()" class="btn" style="margin-top: 10px; width: 100%;">Buscar por Código</button>
+                </div>
+                
+                <div>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--primary);">👤 Búsqueda por Nombre</label>
+                    <input type="text" id="nombre" class="input-field" placeholder="Ejemplo: García López Juan" onkeyup="buscarSugerencias()">
+                    <button onclick="seleccionarPrimeraSugerencia()" class="btn btn-secondary" style="margin-top: 10px; width: 100%;">Buscar por Nombre</button>
+                </div>
+            </div>
+            
+            <div id="sugerencias" style="display:none;"></div>
+        </div>
+        
+        <div id="resultados" class="card" style="display:none;"></div>
+        <div id="materias" class="card" style="display:none;"></div>
+        <div id="tablaMateria" class="card" style="display:none;"></div>
+    </div>
+</div>
+
+<script>
+// Variables globales
+const {
+    jsPDF
+} = window.jspdf;
+let intentos = 0;
+const maxIntentos = 3;
+const nombreColumna = "NOMBRE COMPLETO";
+let estudianteActual = null;
+
+function verificar() {
+    const clave = document.getElementById('clave').value;
+    if (clave === "20261014") {
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('contenido').style.display = 'block';
+    } else {
+        intentos++;
+        const intentosElem = document.getElementById('intentos');
+        intentosElem.innerText = `❌ Contraseña incorrecta (Intento ${intentos} de ${maxIntentos})`;
+        intentosElem.style.color = '#e53e3e';
+        
+        if (intentos >= maxIntentos) {
+            setTimeout(() => {
+                window.location.href = "https://prepavillaguerrero.wixsite.com/inicio";
+            }, 1000);
+        }
+    }
+}
+
+const datos = [{"CODIGO": "225556259", "NOMBRE COMPLETO": "ARREOLA MUÑOZ ANGELICA YAZMIN", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821498", "NOMBRE COMPLETO": "ALEXIS YAEL LUJANO GARCIA", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556534", "NOMBRE COMPLETO": "BAÑUELOS LUEVANO ALMA LUCERO", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556704", "NOMBRE COMPLETO": "BAÑUELOS MORENO LIAH MELISSA", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556437", "NOMBRE COMPLETO": "CAMPOS FLORES MAURICIO", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556429", "NOMBRE COMPLETO": "FLORES MARTINEZ VICTORIA ZOILY", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556054", "NOMBRE COMPLETO": "GALLEGOS PEREZ DESTINY YULIANA", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556542", "NOMBRE COMPLETO": "GAMBOA ALEGRIA JONATHAN", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556038", "NOMBRE COMPLETO": "GAMBOA ESCATEL EIDAN GUSTAVO", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556283", "NOMBRE COMPLETO": "GONZALEZ QUEZADA EVELYN HAIDEE", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556232", "NOMBRE COMPLETO": "GONZALEZ VALDES IVAN ASAEL", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225555899", "NOMBRE COMPLETO": "GONZALEZ VALDEZ MARTIN", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556488", "NOMBRE COMPLETO": "HUERTA MENDOZA JESUS SALVADOR", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556356", "NOMBRE COMPLETO": "LOERA QUEZADA ALEXANDER", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556461", "NOMBRE COMPLETO": "MAYORGA LOERA ANDREA ALONDRA", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556224", "NOMBRE COMPLETO": "MAYORGA SANCHEZ ROSA ISELA", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556291", "NOMBRE COMPLETO": "MORA VALDES GABRIELA", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225555937", "NOMBRE COMPLETO": "MORALES HUIZAR ERICK MAXIMILIA", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556194", "NOMBRE COMPLETO": "MUÑOZ GUTIERREZ ROSA AILYN", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556348", "NOMBRE COMPLETO": "MURO DE LA TORRE MELISSA", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556151", "NOMBRE COMPLETO": "NAVARRO CLEMENTE LUIS MIGUEL", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556143", "NOMBRE COMPLETO": "PEREZ CANELA JONATHAN HORAN", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556372", "NOMBRE COMPLETO": "PRECIADO VELA ADILENY", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556046", "NOMBRE COMPLETO": "QUEZADA ARTEAGA OMAR", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225555872", "NOMBRE COMPLETO": "RAMOS ULLOA ISAEL", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556585", "NOMBRE COMPLETO": "REYES CASAS MARIANA KOINTA", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225555988", "NOMBRE COMPLETO": "RIVERA BAÑUELOS LIZBET", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556526", "NOMBRE COMPLETO": "SANCHEZ CASAS KEYLA ESTRELLA", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556577", "NOMBRE COMPLETO": "SANCHEZ FRAUSTO JAZMIN", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556496", "NOMBRE COMPLETO": "TABULLO GARCIA LUIS PEDRO", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556313", "NOMBRE COMPLETO": "TORRES DE LA ROSA LILIANA", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556097", "NOMBRE COMPLETO": "TORRES DE LA ROSA MONICA", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556631", "NOMBRE COMPLETO": "VALDES RAMOS ERICK", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225555929", "NOMBRE COMPLETO": "VAZQUEZ MARQUEZ MAYRANI DANELY", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556747", "NOMBRE COMPLETO": "VIRAMONTES GONZALEZ EYMI", "SEMESTRE Y GRUPO": "3A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225555945", "NOMBRE COMPLETO": "BOBADILLA CARDONA SHAYLA PAULETTE", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556666", "NOMBRE COMPLETO": "CARDONA GALICIA AXEL MISSAEL", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556755", "NOMBRE COMPLETO": "CASAS PINEDO GEOVANNY RONALD", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556208", "NOMBRE COMPLETO": "CASTAÑEDA TABULLO YASUMI LIZBETH", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556305", "NOMBRE COMPLETO": "CASTAÑEDA VALDES JIMENA", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556089", "NOMBRE COMPLETO": "CONTRERAS SANCHEZ BRANDON", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225555996", "NOMBRE COMPLETO": "DE LA CRUZ REYES JOSELYN DANEILY", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556623", "NOMBRE COMPLETO": "DE LA CRUZ ROJAS SOLEIDA", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556402", "NOMBRE COMPLETO": "DE LA CRUZ TORRES JUNNIOR HECTOR", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556453", "NOMBRE COMPLETO": "DE LA TORRE MEZA TANIA LIZETH", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556674", "NOMBRE COMPLETO": "DIAZ LERMA MARIA FERNANDA", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556607", "NOMBRE COMPLETO": "ESCOBEDO GARCIA MANUEL SALVADOR", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556062", "NOMBRE COMPLETO": "FALCON DIERA MARIA ESTRELLA", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556763", "NOMBRE COMPLETO": "GAMBOA CEJA GRECIA NAHOMI", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556615", "NOMBRE COMPLETO": "GAYTAN BOBADILLA SAMANTHA", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556658", "NOMBRE COMPLETO": "INOSTROZ DUARTE DIANA", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556445", "NOMBRE COMPLETO": "LEMUS LEMUS ESMERALDA GUADA", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "226286344", "NOMBRE COMPLETO": "LOPEZ GONZALEZ YAZMIN", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556682", "NOMBRE COMPLETO": "LOPEZ LLAMAS DAVID ANTONIO", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556771", "NOMBRE COMPLETO": "MENDOZA FELIX VERONICA", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556186", "NOMBRE COMPLETO": "MENDOZA GARCIA KARLA", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556216", "NOMBRE COMPLETO": "PINEDO AGUILAR CRISTINA GUADALUPE", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556593", "NOMBRE COMPLETO": "QUIROZ LOPEZ ALONSO", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "123456789", "NOMBRE COMPLETO": "RAYGOZA ALEGRIA  JOCELYN ZORAIDA", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225555953", "NOMBRE COMPLETO": "RAYGOZA QUEZADA KAROL", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556127", "NOMBRE COMPLETO": "REYES AGUILAR AILIANY DENYS", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556178", "NOMBRE COMPLETO": "REYES CLEMENTE NICANDRO", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556798", "NOMBRE COMPLETO": "ROMERO SANCHEZ LUIS EDUARDO", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556321", "NOMBRE COMPLETO": "SANCHEZ GONZALEZ CRISTIAN FIDEL", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556739", "NOMBRE COMPLETO": "TABULLO MOJARRO DULCE MARIA", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556275", "NOMBRE COMPLETO": "TORRES BOBADILLA MELANIE YAZMIN", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225555902", "NOMBRE COMPLETO": "VALDES MARQUEZ JESUS MIGUEL", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556518", "NOMBRE COMPLETO": "VALDES SANCHEZ JOSLYN MARIEL", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556712", "NOMBRE COMPLETO": "VALDEZ SANCHEZ BERASMO", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556267", "NOMBRE COMPLETO": "VALDEZ VALDEZ LILIANA", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "225556364", "NOMBRE COMPLETO": "VARGAS GONZALEZ DIEGO FRANCISCO", "SEMESTRE Y GRUPO": "3B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821641", "NOMBRE COMPLETO": "CARDONA BALTAZAR ANA LAURA", "SEMESTRE Y GRUPO": "5A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821676", "NOMBRE COMPLETO": "CARDONA FLORES ANGEL GAEL", "SEMESTRE Y GRUPO": "5A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821757", "NOMBRE COMPLETO": "CARDONA FLORES AXEL GABRIEL", "SEMESTRE Y GRUPO": "5A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821552", "NOMBRE COMPLETO": "CARDONA MARTINEZ PERLA JIMENA", "SEMESTRE Y GRUPO": "5A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821668", "NOMBRE COMPLETO": "CHICO PINEDO AMADOR", "SEMESTRE Y GRUPO": "5A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821374", "NOMBRE COMPLETO": "DE LA CRUZ ROJAS MELINDA", "SEMESTRE Y GRUPO": "5A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821617", "NOMBRE COMPLETO": "DENA QUEZADA JUAN", "SEMESTRE Y GRUPO": "5A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821986", "NOMBRE COMPLETO": "FLORES ESCOBEDO DANNA REGINA", "SEMESTRE Y GRUPO": "5A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821579", "NOMBRE COMPLETO": "FLORES ROSALES KENIA PATRICIA", "SEMESTRE Y GRUPO": "5A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821404", "NOMBRE COMPLETO": "GAMBOA RAYGOZA DANIELA GUADALUPE", "SEMESTRE Y GRUPO": "5A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821854", "NOMBRE COMPLETO": "ORTEGA GONZALEZ TATIANA", "SEMESTRE Y GRUPO": "5A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "223734346", "NOMBRE COMPLETO": "PEREA . MELISSA", "SEMESTRE Y GRUPO": "5A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224822087", "NOMBRE COMPLETO": "RAMIREZ MORALES JUAN MANUEL JUNIOR", "SEMESTRE Y GRUPO": "5A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821706", "NOMBRE COMPLETO": "RAYGOZA QUEZADA XIMENA", "SEMESTRE Y GRUPO": "5A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821633", "NOMBRE COMPLETO": "REYES ROJAS DANIA ANALY", "SEMESTRE Y GRUPO": "5A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821366", "NOMBRE COMPLETO": "RIOS RAMOS ALEXIA YARENNI", "SEMESTRE Y GRUPO": "5A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821463", "NOMBRE COMPLETO": "RIOS RAMOS MELANI MARIANA", "SEMESTRE Y GRUPO": "5A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821358", "NOMBRE COMPLETO": "SANCHEZ LEAÑOS ROBERTO CARLOS", "SEMESTRE Y GRUPO": "5A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821684", "NOMBRE COMPLETO": "SANCHEZ RAMIREZ HUGO YAEL", "SEMESTRE Y GRUPO": "5A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821714", "NOMBRE COMPLETO": "SIGALA VAZQUEZ LIZBETH", "SEMESTRE Y GRUPO": "5A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224822079", "NOMBRE COMPLETO": "VALDES BRECEDA JUAN PABLO", "SEMESTRE Y GRUPO": "5A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821331", "NOMBRE COMPLETO": "VILLAGRANA ALVAREZ ADAN EDUARDO", "SEMESTRE Y GRUPO": "5A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224822095", "NOMBRE COMPLETO": "VIRAMONTES DURAN DIANA PAOLA", "SEMESTRE Y GRUPO": "5A", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224822001", "NOMBRE COMPLETO": "ACOSTA CASAS EDUARDO", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224822044", "NOMBRE COMPLETO": "BRECEDA VELA VANESSA", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821951", "NOMBRE COMPLETO": "CABELLO ALEGRIA ERICK JESUS", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821862", "NOMBRE COMPLETO": "CLEMENTE MARQUEZ YUBAL EDUARDO", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821587", "NOMBRE COMPLETO": "DIAZ CASAS FATIMA LIZBETH", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821536", "NOMBRE COMPLETO": "GARCIA GARCIA EDER YAEL", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821447", "NOMBRE COMPLETO": "GARCIA MARQUEZ BRAYAN", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "226286387", "NOMBRE COMPLETO": "GONZALEZ HUERTA DAIANA YEYLIN", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821838", "NOMBRE COMPLETO": "GONZALEZ MOJARRO BRYAN", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821501", "NOMBRE COMPLETO": "GUTIERREZ GARCIA IRIS GUADALUPE", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821595", "NOMBRE COMPLETO": "HARO MEDINA CLARISSA ANAYEL", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "226286298", "NOMBRE COMPLETO": "JARA GONZALEZ AYLIN GUADALUPE", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821382", "NOMBRE COMPLETO": "NUÑEZ GAMBOA EVELYN ESTHER", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821544", "NOMBRE COMPLETO": "PINEDO GONZALEZ YULETH MAYTTE", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821889", "NOMBRE COMPLETO": "RAMOS CORREA CAMILA ELIZABET", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821811", "NOMBRE COMPLETO": "RAYGOZA CARDENAS CAROLINA", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821625", "NOMBRE COMPLETO": "REYES MARQUEZ JUAN JOSE", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821609", "NOMBRE COMPLETO": "RIOS SANCHEZ LIZBETH", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821323", "NOMBRE COMPLETO": "ROJAS BAÑUELOS ESTEBAN", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821919", "NOMBRE COMPLETO": "ROSALES LEYVA ROSA ISELA", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821978", "NOMBRE COMPLETO": "SANDOVAL GONZALEZ GRISELDA VALERI", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821994", "NOMBRE COMPLETO": "VALDES FELIX HUGO ALBERTO", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821471", "NOMBRE COMPLETO": "VALDES GONZALEZ YAHAIRA", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}, {"CODIGO": "224821765", "NOMBRE COMPLETO": "VALDEZ VELAZQUEZ LOLITA", "SEMESTRE Y GRUPO": "5B", "OBSERVACIONES GENERALES": "SIN OBSERVACIONES"}];
+const materias = {"QUIMICA DEL CARBONO": [{"CODIGO": "225556259", "ASISTENCIA": "Casi siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821498", "ASISTENCIA": "Casi siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556534", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556704", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556437", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556429", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556054", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556542", "ASISTENCIA": "Casi siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556038", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556283", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556232", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555899", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556488", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556356", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556461", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556224", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556291", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555937", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556194", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556348", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556151", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556143", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556372", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556046", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555872", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556585", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555988", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556526", "ASISTENCIA": "Casi siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556577", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556496", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556313", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556097", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556631", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555929", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556747", "ASISTENCIA": "Casi siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555945", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556666", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556755", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556208", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556305", "ASISTENCIA": "Casi siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556089", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555996", "ASISTENCIA": "Casi siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556623", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556402", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556453", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556674", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556607", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556062", "ASISTENCIA": "Casi siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556763", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556615", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556658", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556445", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286344", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556682", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556771", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556186", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556216", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556593", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "123456789", "ASISTENCIA": "Casi siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555953", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556127", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556178", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556798", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556321", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556739", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556275", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555902", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556518", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556712", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556267", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556364", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}], "INNOVACIÓN, TEC Y PC": [{"CODIGO": "225556259", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821498", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556534", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556704", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556437", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556429", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556054", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556542", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556038", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556283", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556232", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555899", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556488", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556356", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556461", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556224", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556291", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555937", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556194", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556348", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556151", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556143", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556372", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556046", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555872", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556585", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555988", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556526", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556577", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556496", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556313", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556097", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556631", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555929", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556747", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555945", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556666", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556755", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556208", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556305", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556089", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555996", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556623", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556402", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556453", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556674", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556607", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556062", "ASISTENCIA": "A veces", "CONDUCTA": "Buena", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556763", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556615", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556658", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556445", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286344", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556682", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556771", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556186", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556216", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556593", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "123456789", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555953", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556127", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556178", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556798", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556321", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556739", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556275", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555902", "ASISTENCIA": "A veces", "CONDUCTA": "Buena", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556518", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556712", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556267", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556364", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}], "EL MUNDO A TRAVEZ DEL ARTE": [{"CODIGO": "225556259", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821498", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556534", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556704", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556437", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556429", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556054", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556542", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556038", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556283", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556232", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555899", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556488", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556356", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556461", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556224", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556291", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555937", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556194", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556348", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556151", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556143", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556372", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556046", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555872", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556585", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555988", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556526", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556577", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556496", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556313", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556097", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556631", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555929", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556747", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555945", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556666", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556755", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556208", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "A veces"}, {"CODIGO": "225556305", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556089", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555996", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556623", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556402", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "A veces"}, {"CODIGO": "225556453", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556674", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556607", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556062", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556763", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "A veces"}, {"CODIGO": "225556615", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556658", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556445", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "A veces"}, {"CODIGO": "226286344", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556682", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556771", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556186", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556216", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556593", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "A veces"}, {"CODIGO": "123456789", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "A veces"}, {"CODIGO": "225555953", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556127", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556178", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "A veces"}, {"CODIGO": "225556798", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556321", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556739", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "A veces"}, {"CODIGO": "225556275", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555902", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "A veces"}, {"CODIGO": "225556518", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556712", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556267", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556364", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}], "TUTORIA DE TRAYECTORIA 1": [{"CODIGO": "225556259", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821498", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556534", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556704", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556437", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556429", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556054", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556542", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556038", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556283", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556232", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555899", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556488", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556356", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556461", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556224", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556291", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555937", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556194", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556348", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556151", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556143", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556372", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556046", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555872", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556585", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555988", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556526", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556577", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556496", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556313", "ASISTENCIA": "Nunca", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556097", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556631", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555929", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556747", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555945", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556666", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556755", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556208", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556305", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556089", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555996", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556623", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556402", "ASISTENCIA": "Casi siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556453", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556674", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556607", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556062", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556763", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556615", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556658", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556445", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286344", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556682", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556771", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556186", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556216", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556593", "ASISTENCIA": "Casi siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "123456789", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555953", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556127", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556178", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556798", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556321", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556739", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556275", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555902", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556518", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556712", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556267", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556364", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}], "INGLÉS NIVEL 3": [{"CODIGO": "225556259", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821498", "ASISTENCIA": "Nunca", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556534", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556704", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556437", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556429", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556054", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556542", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556038", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556283", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556232", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555899", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556488", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556356", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556461", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556224", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556291", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555937", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556194", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556348", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556151", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556143", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556372", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556046", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555872", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556585", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555988", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556526", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556577", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556496", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556313", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556097", "ASISTENCIA": "Nunca", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556631", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555929", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556747", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555945", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556666", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556755", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556208", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556305", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556089", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555996", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556623", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556402", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556453", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556674", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556607", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556062", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556763", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556615", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556658", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556445", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286344", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556682", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556771", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556186", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556216", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556593", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "123456789", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555953", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556127", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556178", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556798", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556321", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556739", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556275", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555902", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556518", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556712", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556267", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556364", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}], "PENSAMIENTO MATEMÁTICO I": [{"CODIGO": "225556259", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821498", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556534", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556704", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556437", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556429", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556054", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556542", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556038", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556283", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556232", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555899", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556488", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556356", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556461", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556224", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556291", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555937", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556194", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556348", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556151", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556143", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556372", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556046", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555872", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556585", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555988", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556526", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556577", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556496", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556313", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556097", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556631", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555929", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556747", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555945", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556666", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "A veces"}, {"CODIGO": "225556755", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556208", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556305", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556089", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555996", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556623", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556402", "ASISTENCIA": "Nunca", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556453", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556674", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556607", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556062", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556763", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556615", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556658", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556445", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286344", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556682", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556771", "ASISTENCIA": "Nunca", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556186", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556216", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556593", "ASISTENCIA": "Nunca", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "123456789", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555953", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556127", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556178", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556798", "ASISTENCIA": "Siempre", "CONDUCTA": "Buena", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556321", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556739", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556275", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555902", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556518", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556712", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556267", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556364", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}], "JUEGOS Y ESTRATEGIAS MAT": [{"CODIGO": "225556259", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821498", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Casi siempre"}, {"CODIGO": "225556534", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556704", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556437", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Casi siempre"}, {"CODIGO": "225556429", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Casi siempre"}, {"CODIGO": "225556054", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556542", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Casi siempre"}, {"CODIGO": "225556038", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Casi siempre"}, {"CODIGO": "225556283", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556232", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Casi siempre"}, {"CODIGO": "225555899", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Casi siempre"}, {"CODIGO": "225556488", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Casi siempre"}, {"CODIGO": "225556356", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Casi siempre"}, {"CODIGO": "225556461", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556224", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556291", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555937", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556194", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556348", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556151", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556143", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556372", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556046", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Casi siempre"}, {"CODIGO": "225555872", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Casi siempre"}, {"CODIGO": "225556585", "ASISTENCIA": "Casi siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555988", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556526", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556577", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556496", "ASISTENCIA": "Casi siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Casi siempre"}, {"CODIGO": "225556313", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556097", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556631", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Casi siempre"}, {"CODIGO": "225555929", "ASISTENCIA": "Casi siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Casi siempre"}, {"CODIGO": "225556747", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Casi siempre"}, {"CODIGO": "225555945", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556666", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556755", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556208", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556305", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556089", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555996", "ASISTENCIA": "Casi nunca", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556623", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556402", "ASISTENCIA": "Nunca", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556453", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556674", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556607", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556062", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556763", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556615", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556658", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556445", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286344", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556682", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556771", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556186", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556216", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556593", "ASISTENCIA": "Casi siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "123456789", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555953", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556127", "ASISTENCIA": "Casi nunca", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556178", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556798", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556321", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556739", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556275", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555902", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556518", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556712", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556267", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556364", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}], "FUNDAMENTOS DE LA IA": [{"CODIGO": "225556259", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821498", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556534", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556704", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556437", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556429", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556054", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556542", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556038", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556283", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556232", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555899", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556488", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556356", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556461", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556224", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556291", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555937", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556194", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556348", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556151", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556143", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556372", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556046", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555872", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556585", "ASISTENCIA": "Casi nunca", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555988", "ASISTENCIA": "Siempre", "CONDUCTA": "Buena", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556526", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556577", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556496", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556313", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556097", "ASISTENCIA": "Siempre", "CONDUCTA": "Buena", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556631", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555929", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556747", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555945", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556666", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556755", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556208", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556305", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556089", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555996", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556623", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556402", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556453", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556674", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556607", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556062", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556763", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556615", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556658", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556445", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286344", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556682", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556771", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556186", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556216", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556593", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "123456789", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555953", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556127", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556178", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556798", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556321", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556739", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556275", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555902", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556518", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556712", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556267", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556364", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}], "COMPRENSIÓN LECTORA II": [{"CODIGO": "225556259", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821498", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556534", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556704", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556437", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556429", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556054", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556542", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556038", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556283", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556232", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555899", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556488", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556356", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556461", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556224", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556291", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555937", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556194", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556348", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556151", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556143", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556372", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556046", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555872", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556585", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555988", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556526", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556577", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556496", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556313", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556097", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556631", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555929", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556747", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555945", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556666", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556755", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556208", "ASISTENCIA": "Casi siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556305", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556089", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555996", "ASISTENCIA": "Casi nunca", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556623", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556402", "ASISTENCIA": "Casi nunca", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556453", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556674", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556607", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556062", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556763", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556615", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556658", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556445", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286344", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556682", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556771", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556186", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556216", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556593", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "123456789", "ASISTENCIA": "Casi siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555953", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556127", "ASISTENCIA": "Casi nunca", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556178", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556798", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556321", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556739", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556275", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555902", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556518", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556712", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556267", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556364", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}], "DEPORTE Y RECREACIÓN": [{"CODIGO": "225556259", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821498", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556534", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556704", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556437", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556429", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556054", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556542", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556038", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556283", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556232", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555899", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556488", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556356", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556461", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556224", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556291", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555937", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556194", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556348", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556151", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556143", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556372", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556046", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555872", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556585", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555988", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556526", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556577", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556496", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556313", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556097", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556631", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555929", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225556747", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "225555945", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556666", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556755", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556208", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556305", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556089", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225555996", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556623", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556402", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556453", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556674", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556607", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556062", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556763", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556615", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556658", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556445", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "226286344", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556682", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556771", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556186", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556216", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556593", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "123456789", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225555953", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556127", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556178", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556798", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556321", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556739", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556275", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225555902", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556518", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556712", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556267", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "225556364", "ASISTENCIA": "***", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}], "DIS. DE PLAN DE VIDA": [{"CODIGO": "224821641", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821676", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821757", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821552", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821668", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821374", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821617", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821986", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "224821579", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821404", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821854", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "223734346", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822087", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821706", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821633", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "224821366", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821463", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821358", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821684", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821714", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822079", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821331", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822095", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822001", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822044", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821951", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821862", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821587", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821536", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821447", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286387", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821838", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "224821501", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821595", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286298", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821382", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821544", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821889", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821811", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821625", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "224821609", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821323", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821919", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821978", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821994", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821471", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821765", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}], "PRECÁLCULO": [{"CODIGO": "224821641", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821676", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821757", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821552", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821668", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821374", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821617", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821986", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821579", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821404", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821854", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "223734346", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822087", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821706", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821633", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821366", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821463", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821358", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821684", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821714", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822079", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821331", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822095", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822001", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822044", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821951", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821862", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821587", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821536", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821447", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286387", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821838", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821501", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821595", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286298", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821382", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821544", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821889", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821811", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821625", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "224821609", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821323", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821919", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821978", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821994", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821471", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821765", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}], "IDENTIDAD Y FILOSOFÍA": [{"CODIGO": "224821641", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821676", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821757", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821552", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821668", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821374", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821617", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821986", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821579", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821404", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821854", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "223734346", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822087", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821706", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821633", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821366", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821463", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821358", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821684", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821714", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822079", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821331", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822095", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822001", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822044", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821951", "ASISTENCIA": "Casi nunca", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821862", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821587", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821536", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821447", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286387", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821838", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "224821501", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821595", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286298", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821382", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821544", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821889", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821811", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821625", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "224821609", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821323", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821919", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821978", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821994", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821471", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821765", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}], "SOLUCIÓN DE PROB. MAT.": [{"CODIGO": "224821641", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821676", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821757", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821552", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821668", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821374", "ASISTENCIA": "Casi siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821617", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821986", "ASISTENCIA": "Casi siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821579", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821404", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821854", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "223734346", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822087", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821706", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821633", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821366", "ASISTENCIA": "Casi siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821463", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821358", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821684", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821714", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822079", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821331", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822095", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822001", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822044", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821951", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821862", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821587", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821536", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821447", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286387", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821838", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "224821501", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821595", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286298", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821382", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821544", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821889", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821811", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821625", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821609", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821323", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821919", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821978", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821994", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821471", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821765", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}], "CIUDADANIA MUNDIAL": [{"CODIGO": "224821641", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821676", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821757", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821552", "ASISTENCIA": "Casi siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821668", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821374", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821617", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821986", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821579", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821404", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821854", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "223734346", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822087", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821706", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821633", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821366", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821463", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821358", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821684", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821714", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822079", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821331", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822095", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822001", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822044", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821951", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821862", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821587", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821536", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821447", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286387", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821838", "ASISTENCIA": "Casi nunca", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821501", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821595", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286298", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821382", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821544", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821889", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821811", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821625", "ASISTENCIA": "Casi nunca", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821609", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821323", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821919", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821978", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821994", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821471", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821765", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}], "BIOLOGIA II": [{"CODIGO": "224821641", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821676", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821757", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821552", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821668", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821374", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821617", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821986", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821579", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821404", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821854", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "223734346", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822087", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821706", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821633", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821366", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821463", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821358", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821684", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821714", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822079", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821331", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822095", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822001", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822044", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821951", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821862", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821587", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821536", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821447", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286387", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821838", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821501", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821595", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286298", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821382", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821544", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821889", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821811", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821625", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821609", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821323", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821919", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821978", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821994", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821471", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821765", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}], "INT. DE TEXTOS EN ING. III": [{"CODIGO": "224821641", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821676", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821757", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821552", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821668", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821374", "ASISTENCIA": "Casi siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821617", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821986", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821579", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821404", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821854", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "223734346", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822087", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821706", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821633", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821366", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821463", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821358", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821684", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821714", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822079", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821331", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822095", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822001", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822044", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821951", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821862", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821587", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821536", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821447", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286387", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821838", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "224821501", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821595", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286298", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821382", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821544", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821889", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821811", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821625", "ASISTENCIA": "A veces", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821609", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821323", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821919", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821978", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821994", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821471", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821765", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}], "ESTILO Y CORRECCIÓN": [{"CODIGO": "224821641", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821676", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821757", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821552", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821668", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821374", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821617", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821986", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821579", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821404", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821854", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "223734346", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822087", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821706", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821633", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821366", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821463", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821358", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821684", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821714", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822079", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821331", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822095", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822001", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822044", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821951", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821862", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821587", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821536", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821447", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286387", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821838", "ASISTENCIA": "Casi nunca", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821501", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821595", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286298", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821382", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821544", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821889", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821811", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821625", "ASISTENCIA": "Casi siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821609", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821323", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821919", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821978", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821994", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821471", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821765", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}], "LENGUA EXTRANJERA V": [{"CODIGO": "224821641", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821676", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821757", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821552", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821668", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821374", "ASISTENCIA": "Casi nunca", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821617", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821986", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821579", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821404", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821854", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "223734346", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822087", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821706", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821633", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821366", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821463", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821358", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821684", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821714", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822079", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821331", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822095", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822001", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224822044", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821951", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821862", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821587", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821536", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821447", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286387", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821838", "ASISTENCIA": "Nunca", "CONDUCTA": "***", "TRABAJO EN CLASE": "***"}, {"CODIGO": "224821501", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821595", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "226286298", "ASISTENCIA": "Casi nunca", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821382", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821544", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821889", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821811", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821625", "ASISTENCIA": "Casi nunca", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821609", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821323", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821919", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821978", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821994", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821471", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}, {"CODIGO": "224821765", "ASISTENCIA": "Siempre", "CONDUCTA": "Excelente", "TRABAJO EN CLASE": "Siempre"}]};
+
+function normalizarTexto(texto) {
+    return texto.toLowerCase()
+        .normalize("NFD")
+        .replace(/[̀-ͯ]/g, "")
+        .replace(/[^a-z0-9 ]/g, "");
+}
+
+function buscarSugerencias() {
+    const termino = document.getElementById("nombre").value.trim();
+    const divSugerencias = document.getElementById("sugerencias");
+    
+    divSugerencias.innerHTML = '';
+    divSugerencias.style.display = 'none';
+    
+    if (termino.length < 2) return;
+    
+    const terminoNormalizado = normalizarTexto(termino);
+    const sugerencias = datos.filter(alumno => {
+        const nombreCompleto = alumno[nombreColumna] || '';
+        return normalizarTexto(nombreCompleto).includes(terminoNormalizado);
+    });
+    
+    if (sugerencias.length > 0) {
+        divSugerencias.innerHTML = '<h4 style="color: var(--primary); margin-bottom: 15px;">👥 Estudiantes encontrados:</h4>';
+        sugerencias.forEach(alumno => {
+            const nombre = alumno[nombreColumna] || 'Sin nombre';
+            const codigo = alumno.CODIGO || 'Sin código';
+            divSugerencias.innerHTML += `
+                <div class="sugerencia fade-in" onclick="seleccionarAlumno('${codigo}')">
+                    <strong>${nombre}</strong>
+                    <div class="codigo">Código: ${codigo}</div>
+                </div>
+            `;
+        });
+        divSugerencias.style.display = 'block';
+    } else {
+        divSugerencias.innerHTML = '<div class="mensaje error">❌ No se encontraron estudiantes con ese nombre.</div>';
+        divSugerencias.style.display = 'block';
+    }
+}
+
+function seleccionarPrimeraSugerencia() {
+    const sugerencias = document.querySelectorAll('.sugerencia');
+    if (sugerencias.length > 0) {
+        const primeraSugerencia = sugerencias[0];
+        const codigo = primeraSugerencia.querySelector('.codigo').textContent.replace('Código: ', '');
+        seleccionarAlumno(codigo);
+    } else {
+        buscarSugerencias();
+    }
+}
+
+function seleccionarAlumno(codigo) {
+    document.getElementById("codigo").value = codigo;
+    document.getElementById("sugerencias").style.display = 'none';
+    buscarPorCodigo();
+}
+
+function buscarPorCodigo() {
+    const codigo = document.getElementById("codigo").value.trim();
+    const resultado = datos.find(e => e.CODIGO === codigo);
+    const divResultados = document.getElementById("resultados");
+    const divMaterias = document.getElementById("materias");
+    const divTabla = document.getElementById("tablaMateria");
+    const divSugerencias = document.getElementById("sugerencias");
+
+    divResultados.style.display = 'none';
+    divMaterias.style.display = 'none';
+    divTabla.style.display = 'none';
+    divSugerencias.style.display = 'none';
+    divResultados.innerHTML = '';
+    divMaterias.innerHTML = '';
+    divTabla.innerHTML = '';
+
+    if (!resultado) {
+        alert("⚠️ Código no encontrado. Verifica el código e intenta nuevamente.");
+        return;
+    }
+
+    estudianteActual = resultado;
+
+    // Datos Generales (1 fila)
+    const tablaGenerales = tablaDesdeRegistro(resultado);
+    divResultados.innerHTML = "<h3>📄 Datos Generales del Estudiante</h3>" + tablaGenerales;
+    divResultados.style.display = 'block';
+
+    // Botones de materias del alumno
+    const materiasAlumno = Object.entries(materias)
+        .filter(([nombre, registros]) => registros.some(r => r.CODIGO === codigo));
+    
+    if (materiasAlumno.length > 0) {
+        divMaterias.innerHTML = `
+            <div class="section-header">
+                <h3 class="section-title">📚 Materias Cursadas</h3>
+                <button onclick="generarCartaDesempeno()" class="btn btn-success">
+                    📄 Generar reporte
+                </button>
+            </div>
+        `;
+        materiasAlumno.forEach(([nombre]) => {
+            const btn = `<button class='btn-materia' onclick='mostrarMateria("${nombre}", "${codigo}")'>${nombre}</button>`;
+            divMaterias.innerHTML += btn;
+        });
+        divMaterias.style.display = 'block';
+    }
+}
+
+function tablaDesdeRegistro(registro) {
+    const keys = Object.keys(registro);
+    let html = "<div class='table-container'><table><thead><tr>";
+    keys.forEach(k => html += `<th>${k}</th>`);
+    html += "</tr></thead><tbody><tr>";
+    keys.forEach(k => {
+        const val = registro[k] == null ? "" : registro[k];
+        html += `<td data-label="${k}"><span class="value">${val}</span></td>`;
+    });
+    html += "</tr></tbody></table></div>";
+    return html;
+}
+
+function tablaDesdeFilas(filas) {
+    if (!filas || filas.length === 0) return "";
+    const keys = Object.keys(filas[0]);
+    let html = "<div class='table-container'><table><thead><tr>";
+    keys.forEach(k => html += `<th>${k}</th>`);
+    html += "</tr></thead><tbody>";
+    filas.forEach(row => {
+        html += "<tr>";
+        keys.forEach(k => {
+            const val = row[k] == null ? "" : row[k];
+            html += `<td data-label="${k}"><span class="value">${val}</span></td>`;
+        });
+        html += "</tr>";
+    });
+    html += "</tbody></table></div>";
+    return html;
+}
+
+function mostrarMateria(nombre, codigo) {
+    const registros = materias[nombre].filter(r => r.CODIGO === codigo);
+    if (registros.length === 0) return;
+
+    const tabla = tablaDesdeFilas(registros);
+    const div = document.getElementById("tablaMateria");
+    div.innerHTML = `<h3>📈 Desempeño en ${nombre}</h3>` + tabla;
+    div.style.display = 'block';
+}
+
+function generarCartaDesempeno() {
+    if (!estudianteActual) {
+        alert("No hay información del estudiante para generar el reporte.");
+        return;
+    }
+
+    const codigo = estudianteActual.CODIGO;
+    const nombreEstudiante = estudianteActual[nombreColumna] || 'Nombre no disponible';
+    
+    // Obtener todas las materias del estudiante
+    const todasMaterias = [];
+    Object.entries(materias).forEach(([nombreMateria, registros]) => {
+        const registrosEstudiante = registros.filter(r => r.CODIGO === codigo);
+        if (registrosEstudiante.length > 0) {
+            todasMaterias.push({
+                materia: nombreMateria,
+                registros: registrosEstudiante
+            });
+        }
+    });
+
+    if (todasMaterias.length === 0) {
+        alert("No se encontraron materias para este estudiante.");
+        return;
+    }
+
+    // Crear PDF
+    const doc = new jsPDF();
+    
+    // Configuración inicial
+    const pageWidth = doc.internal.pageSize.getWidth();
+    let yPos = 20;
+    
+    // Encabezado
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text("REPORTE DE DESEMPEÑO ACADÉMICO", pageWidth / 2, yPos, { align: 'center' });
+    yPos += 10;
+    
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    doc.text("Escuela Preparatoria Regional de Colotlán - Módulo Villa Guerrero", pageWidth / 2, yPos, { align: 'center' });
+    yPos += 15;
+    
+    // Información del estudiante
+    doc.setFont('helvetica', 'bold');
+    doc.text("INFORMACIÓN DEL ESTUDIANTE:", 20, yPos);
+    yPos += 8;
+    
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Nombre: ${nombreEstudiante}`, 25, yPos);
+    yPos += 6;
+    doc.text(`Código: ${codigo}`, 25, yPos);
+    yPos += 6;
+    
+    // Agregar otros datos relevantes del estudiante
+    const datosRelevantes = ['GRUPO', 'TURNO', 'SEMESTRE', 'ESTATUS'];
+    datosRelevantes.forEach(dato => {
+        if (estudianteActual[dato]) {
+            doc.text(`${dato}: ${estudianteActual[dato]}`, 25, yPos);
+            yPos += 6;
+        }
+    });
+    
+    yPos += 10;
+    
+    // Desempeño por materia
+    doc.setFont('helvetica', 'bold');
+    doc.text("DESEMPEÑO ACADÉMICO POR MATERIA:", 20, yPos);
+    yPos += 10;
+    
+    todasMaterias.forEach(({ materia, registros }, index) => {
+        // Verificar si necesitamos nueva página
+        if (yPos > 250) {
+            doc.addPage();
+            yPos = 20;
+        }
+        
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.text(`Materia: ${materia}`, 25, yPos);
+        yPos += 7;
+        
+        // Preparar datos para la tabla
+        const headers = Object.keys(registros[0]).filter(key => key !== 'CODIGO');
+        const tableData = registros.map(registro => {
+            return headers.map(header => registro[header] || '');
+        });
+        
+        // Generar tabla
+        doc.autoTable({
+            startY: yPos,
+            head: [headers],
+            body: tableData,
+            theme: 'grid',
+            styles: { fontSize: 8, cellPadding: 2 },
+            headStyles: { fillColor: [0, 51, 102] }
+        });
+        
+        yPos = doc.lastAutoTable.finalY + 10;
+        
+        // Agregar línea separadora entre materias
+        if (index < todasMaterias.length - 1) {
+            doc.setDrawColor(200, 200, 200);
+            doc.line(20, yPos, pageWidth - 20, yPos);
+            yPos += 5;
+        }
+    });
+    
+    // Pie de página
+    const fecha = new Date().toLocaleDateString('es-MX');
+    yPos = doc.internal.pageSize.getHeight() - 30;
+    doc.setFontSize(10);
+    doc.text(`Documento generado el: ${fecha}`, pageWidth / 2, yPos, { align: 'center' });
+    yPos += 5;
+    doc.text("Sistema de Consulta de Información Estudiantil - SiCIE MVG+ v.4.8.1", pageWidth / 2, yPos, { align: 'center' });
+    
+    // Guardar PDF
+    const nombreArchivo = `Reporte_${nombreEstudiante.replace(/[^a-z0-9]/gi, '_')}_${codigo}.pdf`;
+    doc.save(nombreArchivo);
+    
+    // Mostrar mensaje de éxito
+    alert(`✅ Reporte de desempeño generado exitosamente:\n"${nombreArchivo}"`);
+}
+</script>
+</body>
+</html>
