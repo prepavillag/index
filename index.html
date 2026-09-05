@@ -825,7 +825,7 @@ function generarCartaDesempeno() {
     const fecha = new Date().toLocaleDateString('es-MX');
     yPos = doc.internal.pageSize.getHeight() - 30;
     doc.setFontSize(10);
-    doc.text(`Documento correspondiente a la semana del 4 ago - 4 sep 2026, generado el: ${fecha}`, pageWidth / 2, yPos, { align: 'center' });
+    doc.text(`Documento correspondiente a la semana del 31 ago - 4 sep 2026, generado el: ${fecha}`, pageWidth / 2, yPos, { align: 'center' });
     yPos += 5;
     doc.text("Sistema de Consulta de Información Estudiantil - SiCIE MVG+ v.4.8.1", pageWidth / 2, yPos, { align: 'center' });
     
